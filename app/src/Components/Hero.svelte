@@ -1,7 +1,7 @@
 <script>
   const message = {
-    title: "AV01.tv 貓貓好幫手",
-    subtitle: "version 1.0 2020/8/27"
+    title: "愛情武打線上研究教材",
+    subtitle: "By Maowman"
   };
 </script>
 

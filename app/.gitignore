@@ -88,3 +88,7 @@ typings/
 
 # Electron-Forge
 out/
+
+firefox-1144/
+
+asset/

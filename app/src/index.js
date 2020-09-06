@@ -1,16 +1,17 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
-const puppeteer = require("puppeteer-electron");
+const { firefox } = require("playwright");
 const path = require("path");
 const fetch = require("node-fetch");
 const concatTypedArray = require("concat-typed-array");
 const fs = require("fs");
 const handbrake = require("handbrake-js");
-const hidefile = require("hidefile");
-require("electron-reload")(__dirname, {
-    electron: path.join(__dirname, "../node_modules", ".bin", "electron"),
-    awaitWriteFinish: true,
-});
 
+if (!app.isPackaged) {
+    require("electron-reload")(__dirname, {
+        electron: path.join(__dirname, "../node_modules", ".bin", "electron"),
+        awaitWriteFinish: true,
+    });
+}
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
     // eslint-disable-line global-require
@@ -32,7 +33,7 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, "../public/index.html"));
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
     return mainWindow;
 };
 
@@ -41,35 +42,30 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 
 const main = async () => {
-    const browser = await puppeteer.launch({ headless: false });
-    const pages = await browser.pages();
-    const [page] = pages;
-    const mother = "https://this-page-intentionally-left-blank.org/";
-    await page.setCacheEnabled(false);
-    await page.goto(mother);
-    let last_ts = null;
-    await page.setRequestInterception(true);
-    page.on("request", (request) => {
-        if (request.url().split("?")[0].split(".").reverse()[0] === "ts") {
-            last_ts = request.url();
-        }
-        request.continue();
-    });
+    console.log("main");
     const main = createWindow();
-    ipcMain.handle("get-token", async (event, arg) => {
+    ipcMain.handle("get-token", async (event, url) => {
         try {
-            await page.goto(mother);
-            last_ts = null;
-            await page.goto(arg, { waitUntil: "networkidle0" });
-            await page.$eval("div#av01_player", (node) => node.click());
-            return last_ts;
+            update_downloader("正在取得下載憑證...");
+            const browser = await firefox.launch({
+                headless: true,
+                executablePath: path.join(__dirname, "../firefox-1144/firefox/firefox.exe")
+            });
+            const page = await browser.newPage();
+            await page.goto(url, { waitUntil: "domcontentloaded" });
+            const ts_req = await page.waitForRequest(/\.ts\?/);
+            const ts = ts_req.url();
+            await browser.close();
+            return ts;
         } catch (e) {
+            console.log(e);
             return null;
         }
     });
-    ipcMain.handle("get-video", async (event, arg) => {
+    ipcMain.handle("get-video", async (event, resource_url, seq) => {
         try {
-            const video = await fetch(arg);
+            update_downloader(`下載中：${seq}...`);
+            const video = await fetch(resource_url);
             if (video.status != 200) {
                 return null;
             }
@@ -101,6 +97,7 @@ const main = async () => {
     ipcMain.handle("save-video", async (event, path, data) => {
         try {
             if (data.length === 0) { return null }
+            update_downloader(`檔案緩存中...`);
             const bytes = new Uint8Array(Buffer.from(data));
             const stream = fs.createWriteStream(path, { flags: "a" });
             stream.write(bytes);
@@ -117,15 +114,15 @@ const main = async () => {
     })
 
     ipcMain.handle("get-local", async (event) => {
-        return path.join(__dirname , "../cache.ts");
+        return path.join(__dirname, "../asset/cache.ts");
     })
 
     async function to_mp4(cache_path, wanted_path) {
         return new Promise(resolve => {
-            handbrake.spawn({ input: cache_path, output: wanted_path})
+            handbrake.spawn({ input: cache_path, output: wanted_path })
                 .on("complete", response => { resolve(response) })
                 .on('progress', progress => {
-                    console.log(`Percent complete: ${progress.percentComplete}, ETA: ${progress.eta}`);
+                    update_downloader(`壓縮中，已完成${progress.percentComplete}% ETA:${progress.eta}`);
                 });
         })
     }
@@ -141,21 +138,27 @@ const main = async () => {
         });
         return file_path;
     })
-    ipcMain.handle("delete-cache", async (event , cache_path) => {
-        try{
+    ipcMain.handle("delete-cache", async (event, cache_path) => {
+        try {
             fs.unlinkSync(cache_path);
         }
-        catch (e){
+        catch (e) {
 
         }
-        finally{
+        finally {
             return 0;
         }
     })
 
+    async function update_downloader(message) {
+        main.webContents.send("update-downloader", message);
+    }
+
 };
 
-app.on("ready", () => main());
+app.on("ready", () => {
+    main();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -164,6 +167,7 @@ app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
         app.quit();
     }
+
 });
 
 app.on("activate", () => {

@@ -1,35 +1,48 @@
 <script>
-  import { Input, Field, Switch, Tooltip, Button } from "svelma";
+  import { Input, Field, Switch, Tooltip, Button, Snackbar } from "svelma";
+  import { element } from "svelte/internal";
+  import Downloader from "./Downloader.svelte";
   const worker_limit = 5;
   let target = "";
+  let downloading = false;
   async function main(url) {
-    const token = await get_token(url);
-    console.log(token);
-    //await get_video(token);
-    let counter = 1;
-    const cache_path = await get_cache_path();
-    await delete_cache(cache_path);
-    //let minute = 0;
-    while (true) {
-      const workers = [];
-      const cache = [];
-      for (const worker of [...Array(worker_limit).keys()]) {
-        workers.push(get_video(token, counter, cache));
-        counter += 1;
+    try {
+      downloading = true;
+      const token = await get_token(url);
+      console.log(token);
+      //await get_video(token);
+      let counter = 1;
+      const cache_path = await get_cache_path();
+      await delete_cache(cache_path);
+      //let minute = 0;
+      while (true) {
+        const workers = [];
+        const cache = [];
+        for (const worker of [...Array(worker_limit).keys()]) {
+          workers.push(get_video(token, counter, cache));
+          counter += 1;
+        }
+        await Promise.all(workers);
+        //console.log(cache);
+        if (cache[0].video === null) {
+          break;
+        }
+        const merged = await merge_video(cache);
+        await save_video(cache_path, merged);
       }
-      await Promise.all(workers);
-      //console.log(cache);
-      if (cache[0].video === null) {
-        break;
+      //console.log(videos);
+      if (counter > worker_limit * 2) {
+        const wanted_path = await get_save_path();
+        await compress_video(cache_path, wanted_path);
       }
-      const merged = await merge_video(cache);
-      await save_video(cache_path, merged);
+      console.log("done!");
+      await delete_cache(cache_path);
+    } catch (e) {
+      Snackbar.create({ message: `錯誤訊息：${e}` });
+    } finally {
+      Snackbar.create({ message: '下載完成'})
+      downloading = false;
     }
-    //console.log(videos);
-    const wanted_path = await get_save_path();
-    await compress_video(cache_path, wanted_path);
-    console.log("done!");
-    await delete_cache(cache_path);
   }
   async function get_cache_path() {
     const path = await window.ipcRenderer.invoke("get-local");
@@ -41,9 +54,18 @@
   }
   async function get_video(url, seq, cache) {
     const template = url.split("-");
-    template[1] = `${seq}`;
+    for (let ptr = 0; ptr < template.length; ptr++) {
+      if(/^[0-9]*$/.test(template[ptr])){
+        template[ptr] = `${seq}`
+      }
+    }
     const result = template.join("-");
-    const video = await window.ipcRenderer.invoke("get-video", `${result}`);
+    console.log(result);
+    const video = await window.ipcRenderer.invoke(
+      "get-video",
+      `${result}`,
+      seq
+    );
     console.log(`${seq} completed`);
     cache.push({ seq: seq, video: video });
     return 0;
@@ -73,16 +95,23 @@
 <section class="section">
   <div class="columns is-centered">
     <div class="column is-half">
-      <Field label="輸入影片網址：">
+      <Field label="輸入影片網址(支援av01.tv、pornhub)：">
         <Input type="text" icon="video" bind:value={target} />
       </Field>
-      <Button
-        type="is-primary"
-        iconPack="fas"
-        iconLeft="heart"
-        on:click={() => main(target)}>
-        開始下載
-      </Button>
+      <Downloader bind:is_downloading={downloading} />
+      {#if downloading}
+        <Button disabled type="is-primary" iconPack="fas" iconLeft="heart">
+          開始下載
+        </Button>
+      {:else}
+        <Button
+          type="is-primary"
+          iconPack="fas"
+          iconLeft="heart"
+          on:click={() => main(target)}>
+          開始下載
+        </Button>
+      {/if}
     </div>
   </div>
 </section>

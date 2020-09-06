@@ -1,8 +1,8 @@
 {
-  "name": "app",
-  "productName": "app",
-  "version": "1.0.0",
-  "description": "My Electron application description",
+  "name": "maow-av",
+  "productName": "愛情武打線上研究教材",
+  "version": "1.1.0",
+  "description": "By Maowman",
   "main": "src/index.js",
   "scripts": {
     "start": "concurrently \"npm:svelte-dev\" \"electron-forge start\"",
@@ -28,13 +28,13 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "app"
+            "name": "maow-av"
           }
         },
         {
           "name": "@electron-forge/maker-zip",
           "platforms": [
-            "darwin"
+            "x64"
           ]
         },
         {
@@ -49,18 +49,14 @@
     }
   },
   "dependencies": {
-    "axios": "^0.20.0",
-    "blob": "^0.1.0",
     "bulma": "^0.9.0",
     "concat-typed-array": "^1.0.2",
-    "cross-blob": "^2.0.0",
     "electron-reload": "^1.5.0",
     "electron-squirrel-startup": "^1.0.0",
     "handbrake-js": "^5.0.0",
-    "hidefile": "^3.0.0",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.14.1",
-    "puppeteer-electron": "0.0.8",
+    "playwright": "^1.3.0",
     "sass": "^1.26.10",
     "sirv-cli": "^1.0.0",
     "svelma": "^0.4.0"
