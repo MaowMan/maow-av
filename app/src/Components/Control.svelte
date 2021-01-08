@@ -1,15 +1,28 @@
 <script>
-  import { Input, Field, Switch, Tooltip, Button, Snackbar } from "svelma";
+  import {
+    Input,
+    Field,
+    Switch,
+    Tooltip,
+    Select,
+    Button,
+    Snackbar,
+  } from "svelma";
   import { element } from "svelte/internal";
   import Downloader from "./Downloader.svelte";
   const worker_limit = 5;
   let target = "";
+  const websites = [
+    { label: "av01/pornhub", value: 0 },
+    { label: "avday(swag)", value: 1 },
+  ];
+  let selectedWebsite = 0;
   let downloading = false;
   async function main(url) {
     try {
+      const mode = selectedWebsite ;
       downloading = true;
       const token = await get_token(url);
-      console.log(token);
       //await get_video(token);
       let counter = 1;
       const cache_path = await get_cache_path();
@@ -19,7 +32,7 @@
         const workers = [];
         const cache = [];
         for (const worker of [...Array(worker_limit).keys()]) {
-          workers.push(get_video(token, counter, cache));
+          workers.push(get_video(token, counter, cache,mode));
           counter += 1;
         }
         await Promise.all(workers);
@@ -40,7 +53,7 @@
     } catch (e) {
       Snackbar.create({ message: `錯誤訊息：${e}` });
     } finally {
-      Snackbar.create({ message: '下載完成'})
+      Snackbar.create({ message: "下載完成" });
       downloading = false;
     }
   }
@@ -52,14 +65,24 @@
     const token = await window.ipcRenderer.invoke("get-token", `${url}`);
     return token;
   }
-  async function get_video(url, seq, cache) {
-    const template = url.split("-");
-    for (let ptr = 0; ptr < template.length; ptr++) {
-      if(/^[0-9]*$/.test(template[ptr])){
-        template[ptr] = `${seq}`
+  async function get_video(url, seq, cache,mode) {
+    let template ,result;
+    if (mode === 0) {
+      template = url.split("-");
+      for (let ptr = 0; ptr < template.length; ptr++) {
+        if (/^[0-9]*$/.test(template[ptr])) {
+          template[ptr] = `${seq}`;
+        }
       }
+      result = template.join("-");
     }
-    const result = template.join("-");
+    else if(mode === 1){
+      template = url.split('/');
+      template.splice(6,1);
+      template[7] =`segment-${seq}.ts`;
+      console.log(template);
+      result = template.join("/");
+    }
     console.log(result);
     const video = await window.ipcRenderer.invoke(
       "get-video",
@@ -95,7 +118,18 @@
 <section class="section">
   <div class="columns is-centered">
     <div class="column is-half">
-      <Field label="輸入影片網址(支援av01.tv、pornhub)：">
+      <Field label="選擇網站：">
+        {#if downloading}
+          <Select placeholder="下載中" disabled />
+        {:else}
+          <Select bind:selected={selectedWebsite}>
+            {#each websites as website}
+              <option value={website.value}>{website.label}</option>
+            {/each}
+          </Select>
+        {/if}
+      </Field>
+      <Field label="輸入影片網址：">
         <Input type="text" icon="video" bind:value={target} />
       </Field>
       <Downloader bind:is_downloading={downloading} />

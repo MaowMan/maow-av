@@ -53,9 +53,12 @@ const main = async () => {
             });
             const page = await browser.newPage();
             await page.goto(url, { waitUntil: "domcontentloaded" });
-            const ts_req = await page.waitForRequest(/\.ts\?/);
+            page.on('request', request =>
+                console.log('>>', request.method(), request.url()));
+            const ts_req = await page.waitForRequest(/\.ts/);
             const ts = ts_req.url();
             await browser.close();
+            console.log(`token = ${ts}`);
             return ts;
         } catch (e) {
             console.log(e);
@@ -66,6 +69,7 @@ const main = async () => {
         try {
             update_downloader(`下載中：${seq}...`);
             const video = await fetch(resource_url);
+            console.log(`downloading >> ${resource_url}`);
             if (video.status != 200) {
                 return null;
             }
