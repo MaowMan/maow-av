@@ -6461,7 +6461,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (124:8) {:else}
+    // (170:8) {:else}
     function create_else_block_1(ctx) {
     	let select;
     	let updating_selected;
@@ -6524,14 +6524,14 @@ var app = (function () {
     		block,
     		id: create_else_block_1.name,
     		type: "else",
-    		source: "(124:8) {:else}",
+    		source: "(170:8) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (122:8) {#if downloading}
+    // (168:8) {#if downloading}
     function create_if_block_1$5(ctx) {
     	let select;
     	let current;
@@ -6568,14 +6568,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1$5.name,
     		type: "if",
-    		source: "(122:8) {#if downloading}",
+    		source: "(168:8) {#if downloading}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (126:12) {#each websites as website}
+    // (172:12) {#each websites as website}
     function create_each_block(ctx) {
     	let option;
     	let t_value = /*website*/ ctx[9].label + "";
@@ -6588,7 +6588,7 @@ var app = (function () {
     			t = text(t_value);
     			option.__value = option_value_value = /*website*/ ctx[9].value;
     			option.value = option.__value;
-    			add_location(option, file$d, 126, 14, 3742);
+    			add_location(option, file$d, 172, 14, 5139);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
@@ -6604,14 +6604,14 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(126:12) {#each websites as website}",
+    		source: "(172:12) {#each websites as website}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (125:10) <Select bind:selected={selectedWebsite}>
+    // (171:10) <Select bind:selected={selectedWebsite}>
     function create_default_slot_4(ctx) {
     	let each_1_anchor;
     	let each_value = /*websites*/ ctx[3];
@@ -6672,14 +6672,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_4.name,
     		type: "slot",
-    		source: "(125:10) <Select bind:selected={selectedWebsite}>",
+    		source: "(171:10) <Select bind:selected={selectedWebsite}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (121:6) <Field label="選擇網站：">
+    // (167:6) <Field label="選擇網站：">
     function create_default_slot_3(ctx) {
     	let current_block_type_index;
     	let if_block;
@@ -6750,14 +6750,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_3.name,
     		type: "slot",
-    		source: "(121:6) <Field label=\\\"選擇網站：\\\">",
+    		source: "(167:6) <Field label=\\\"選擇網站：\\\">",
     		ctx
     	});
 
     	return block;
     }
 
-    // (132:6) <Field label="輸入影片網址：">
+    // (178:6) <Field label="輸入影片網址：">
     function create_default_slot_2(ctx) {
     	let input;
     	let updating_value;
@@ -6813,14 +6813,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_2.name,
     		type: "slot",
-    		source: "(132:6) <Field label=\\\"輸入影片網址：\\\">",
+    		source: "(178:6) <Field label=\\\"輸入影片網址：\\\">",
     		ctx
     	});
 
     	return block;
     }
 
-    // (140:6) {:else}
+    // (186:6) {:else}
     function create_else_block$2(ctx) {
     	let button;
     	let current;
@@ -6873,14 +6873,14 @@ var app = (function () {
     		block,
     		id: create_else_block$2.name,
     		type: "else",
-    		source: "(140:6) {:else}",
+    		source: "(186:6) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (136:6) {#if downloading}
+    // (182:6) {#if downloading}
     function create_if_block$7(ctx) {
     	let button;
     	let current;
@@ -6932,14 +6932,14 @@ var app = (function () {
     		block,
     		id: create_if_block$7.name,
     		type: "if",
-    		source: "(136:6) {#if downloading}",
+    		source: "(182:6) {#if downloading}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (141:8) <Button            type="is-primary"            iconPack="fas"            iconLeft="heart"            on:click={() => main(target)}>
+    // (187:8) <Button            type="is-primary"            iconPack="fas"            iconLeft="heart"            on:click={() => main(target)}>
     function create_default_slot_1(ctx) {
     	let t;
 
@@ -6959,14 +6959,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_1.name,
     		type: "slot",
-    		source: "(141:8) <Button            type=\\\"is-primary\\\"            iconPack=\\\"fas\\\"            iconLeft=\\\"heart\\\"            on:click={() => main(target)}>",
+    		source: "(187:8) <Button            type=\\\"is-primary\\\"            iconPack=\\\"fas\\\"            iconLeft=\\\"heart\\\"            on:click={() => main(target)}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (137:8) <Button disabled type="is-primary" iconPack="fas" iconLeft="heart">
+    // (183:8) <Button disabled type="is-primary" iconPack="fas" iconLeft="heart">
     function create_default_slot$1(ctx) {
     	let t;
 
@@ -6986,7 +6986,7 @@ var app = (function () {
     		block,
     		id: create_default_slot$1.name,
     		type: "slot",
-    		source: "(137:8) <Button disabled type=\\\"is-primary\\\" iconPack=\\\"fas\\\" iconLeft=\\\"heart\\\">",
+    		source: "(183:8) <Button disabled type=\\\"is-primary\\\" iconPack=\\\"fas\\\" iconLeft=\\\"heart\\\">",
     		ctx
     	});
 
@@ -7062,11 +7062,11 @@ var app = (function () {
     			t2 = space();
     			if_block.c();
     			attr_dev(div0, "class", "column is-half");
-    			add_location(div0, file$d, 119, 4, 3483);
+    			add_location(div0, file$d, 165, 4, 4880);
     			attr_dev(div1, "class", "columns is-centered");
-    			add_location(div1, file$d, 118, 2, 3444);
+    			add_location(div1, file$d, 164, 2, 4841);
     			attr_dev(section, "class", "section");
-    			add_location(section, file$d, 117, 0, 3415);
+    			add_location(section, file$d, 163, 0, 4812);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -7170,16 +7170,21 @@ var app = (function () {
     const worker_limit = 5;
 
     async function get_cache_path() {
-    	const path = await window.ipcRenderer.invoke("get-local");
+    	const path = await window.ipcRenderer.invoke("get-local", "video.ts");
     	return path;
     }
 
-    async function get_token(url) {
-    	const token = await window.ipcRenderer.invoke("get-token", `${url}`);
+    async function get_audio_path() {
+    	const path = await window.ipcRenderer.invoke("get-local", "audio.ts");
+    	return path;
+    }
+
+    async function get_token(url, mode) {
+    	const token = await window.ipcRenderer.invoke("get-token", `${url}`, mode);
     	return token;
     }
 
-    async function get_video(url, seq, cache, mode) {
+    async function get_video(token, seq, cache, mode) {
     	let template, result;
 
     	if (mode === 0) {
@@ -7193,15 +7198,33 @@ var app = (function () {
 
     		result = template.join("-");
     	} else if (mode === 1) {
-    		template = url.split("/");
-    		template.splice(6, 1);
-    		template[7] = `segment-${seq}.ts`;
-    		console.log(template);
-    		result = template.join("/");
+    		const getUpperlink = url => {
+    			const seqment = url.split("/");
+    			seqment.pop();
+    			return seqment.join("/");
+    		};
+
+    		try {
+    			result = `${getUpperlink(token.link)}/${token.playlist.segments[seq].uri}`;
+    		} catch(e) {
+    			return 0;
+    		}
+    	} else if (mode === -1) {
+    		const getUpperlink = url => {
+    			const seqment = url.split("/");
+    			seqment.pop();
+    			return seqment.join("/");
+    		};
+
+    		try {
+    			result = `${getUpperlink(token.link)}/${token.audiolist.segments[seq].uri}`;
+    		} catch(e) {
+    			return 0;
+    		}
     	}
 
     	console.log(result);
-    	const video = await window.ipcRenderer.invoke("get-video", `${result}`, seq);
+    	const video = await window.ipcRenderer.invoke("get-video", `${result}`, seq, mode > 0 ? "影片" : "音訊");
     	console.log(`${seq} completed`);
     	cache.push({ seq, video });
     	return 0;
@@ -7222,8 +7245,8 @@ var app = (function () {
     	return 0;
     }
 
-    async function compress_video(cache_path, wanted_path) {
-    	await window.ipcRenderer.invoke("compress-video", cache_path, wanted_path);
+    async function compress_video(cache_path, audio_path, wanted_path, mode) {
+    	await window.ipcRenderer.invoke("compress-video", cache_path, audio_path, wanted_path, mode);
     	return 0;
     }
 
@@ -7234,51 +7257,73 @@ var app = (function () {
 
     function instance$d($$self, $$props, $$invalidate) {
     	let target = "";
-    	const websites = [{ label: "av01/pornhub", value: 0 }, { label: "avday(swag)", value: 1 }];
-    	let selectedWebsite = 0;
+    	const websites = [{ label: "av01", value: 0 }, { label: "avday(swag)", value: 1 }];
+    	let selectedWebsite = 1;
     	let downloading = false;
 
     	async function main(url) {
     		try {
     			const mode = selectedWebsite;
     			$$invalidate(2, downloading = true);
-    			const token = await get_token(url);
+    			const token = await get_token(url, mode);
 
     			//await get_video(token);
-    			let counter = 1;
+    			let counter = 0;
 
     			const cache_path = await get_cache_path();
+    			const audio_path = await get_audio_path();
     			await delete_cache(cache_path);
+    			await delete_cache(audio_path);
+    			console.log(`token link >> ${token.link}`);
 
-    			//let minute = 0;
+    			for (const element of token.playlist.segments) {
+    				console.log(element.uri);
+    			}
+
     			while (true) {
     				const workers = [];
     				const cache = [];
+    				const audio_cache = [];
 
     				for (const worker of [...Array(worker_limit).keys()]) {
     					workers.push(get_video(token, counter, cache, mode));
+
+    					if (mode === 1) {
+    						workers.push(get_video(token, counter, audio_cache, -mode));
+    					}
+
     					counter += 1;
     				}
 
     				await Promise.all(workers);
 
     				//console.log(cache);
-    				if (cache[0].video === null) {
-    					break;
+    				const merged = await merge_video(cache);
+
+    				await save_video(cache_path, merged);
+
+    				if (mode === 1) {
+    					const merged_audio = await merge_video(audio_cache);
+    					await save_video(audio_path, merged_audio);
     				}
 
-    				const merged = await merge_video(cache);
-    				await save_video(cache_path, merged);
+    				if (counter >= token.playlist.segments.length) {
+    					break;
+    				}
     			}
 
     			//console.log(videos);
     			if (counter > worker_limit * 2) {
     				const wanted_path = await get_save_path();
-    				await compress_video(cache_path, wanted_path);
+    				await compress_video(cache_path, audio_path, wanted_path, mode);
     			}
 
     			console.log("done!");
     			await delete_cache(cache_path);
+
+    			if (mode === 1) {
+    				await delete_cache(audio_path);
+    			}
     		} catch(e) {
     			Snackbar.create({ message: `錯誤訊息：${e}` });
     		} finally {
@@ -7330,6 +7375,7 @@ var app = (function () {
     		downloading,
     		main,
     		get_cache_path,
+    		get_audio_path,
     		get_token,
     		get_video,
     		merge_video,
