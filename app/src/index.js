@@ -7,8 +7,13 @@ const fs = require("fs");
 const handbrake = require("handbrake-js");
 const m3u8Parser = require('m3u8-parser');
 
-const ffmpeg = createFFmpeg({ log: true });
+
+app.commandLine.appendArgument('--experimental-wasm-threads');
+app.commandLine.appendArgument('--experimental-wasm-bulk-memory');
+
+
 const { createFFmpeg, fetchFile } = require('@ffmpeg/ffmpeg');
+const ffmpeg = createFFmpeg({ log: true });
 
 if (!app.isPackaged) {
     require("electron-reload")(__dirname, {
@@ -46,6 +51,7 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 
 const main = async () => {
+    await ffmpeg.load();
     console.log("main");
     const main = createWindow();
     ipcMain.handle("get-token", async (event, url, mode) => {
@@ -166,12 +172,12 @@ const main = async () => {
         if (mode === 1) {
             const mp2path = path.join(__dirname, `../asset/audio.mp2`);
             fs.renameSync(audio_path, mp2path);
-            await to_mp3(mp2path , mp3path);
+            await to_mp3(mp2path, mp3path);
             fs.renameSync(mp2path, audio_path);
         }
-        await to_mp4(cache_path , wanted_path);
-        if(mode === 1){
-            await add_audio(mp3path , wanted_path);
+        await to_mp4(cache_path, wanted_path);
+        if (mode === 1) {
+            await add_audio(mp3path, wanted_path);
             fs.unlinkSync(mp3path);
         }
         console.log("done!");
@@ -187,27 +193,38 @@ const main = async () => {
             handbrake.spawn(opts)
                 .on("complete", response => { resolve(response) })
                 .on('progress', progress => {
-                    update_ratio(progress.percentComplete , 100);
+                    update_ratio(progress.percentComplete, 100);
                     update_downloader(`壓縮影片中，已完成${progress.percentComplete}% ETA:${progress.eta}`);
                 });
         })
     }
 
-    async function to_mp3(from_path , to_path){
-        await ffmpeg.load();
+    async function to_mp3(from_path, to_path) {
         ffmpeg.setLogger(({ type, message }) => {
             update_downloader(`[${type}] ${message}`);
         });
-        ffmpeg.setProgress((ratio)=>{
-            update_ratio(ratio , 1);
-        })
+        ffmpeg.setProgress((ratio) => {
+            update_ratio(ratio, 1);
+        });
         ffmpeg.FS('writeFile', 'audio.mp2', await fetchFile(from_path));
         await ffmpeg.run('-i', 'audio.mp2', 'audio.mp3');
         await fs.promises.writeFile(to_path, ffmpeg.FS('readFile', 'audio.mp3'));
         return ;
     }
 
-    async function
+    async function add_audio(audio_path, video_path) {
+        ffmpeg.setLogger(({ type, message }) => {
+            update_downloader(`[${type}] ${message}`);
+        });
+        ffmpeg.setProgress((ratio) => {
+            update_ratio(ratio, 1);
+        });
+        ffmpeg.FS('writeFile', 'audio.mp3', await fetchFile(audio_path));
+        ffmpeg.FS('writeFile', 'video.mp4', await fetchFile(video_path));
+        await ffmpeg.run("-i", "video.mp4", "-i", "audio.mp3", "-c", "copy", "-map", "0:v:0", "-map", "1:a:0", "output.mp4");
+        await fs.promises.writeFile(video_path, ffmpeg.FS('readFile', 'output.mp4'));
+        return ;
+    }
 
     ipcMain.handle("get-save-path", async (event) => {
         const file_path = dialog.showSaveDialogSync(main, {
@@ -235,8 +252,8 @@ const main = async () => {
     async function update_downloader(message) {
         main.webContents.send("update-downloader", message);
     }
-    async function update_ratio(process , whole) {
-        main.webContents.send("update-ratio", process , whole);
+    async function update_ratio(process, whole) {
+        main.webContents.send("update-ratio", process, whole);
     }
 
 };
